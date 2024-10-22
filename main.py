@@ -9,8 +9,18 @@ connection = sqlite3.connect('example.db')
 cursor = connection.cursor()
 cursor.execute("CREATE TABLE IF NOT EXISTS Tabela1 (nome TEXT, cpf TEXT, estado TEXT, tipo TEXT)")
 
+def validar_cpf(cpf):
+    cpf = [int(d) for d in cpf if d.isdigit()]
+    if len(cpf) != 11 or len(set(cpf)) == 1:
+        return False
+    return True
+
+
 def inserevalores(nome, cpf, estado, tipo):
-    # Verifica se o estado está no arquivo config.txt
+    if not validar_cpf(cpf):
+        mb.showerror("Erro", "CPF inválido!")
+        return
+    
     with open("config.txt", "r") as file:
         content = file.read()
         estados = content.split(';')
