@@ -1,7 +1,7 @@
 import tkinter
 from tkinter import messagebox as mb
 from PIL import Image, ImageTk
-from tkinter import ttk  # Importar ttk para usar Combobox
+from tkinter import ttk  
 import sqlite3
 
 connection = sqlite3.connect('example.db')
@@ -18,8 +18,16 @@ def inserevalores(nome, cpf, estado, tipo):
     if not validar_cpf(cpf):
         mb.showerror("Erro", "CPF inválido!")
         return
+    
+    with open("config.txt", "r") as file:
+        content = file.read()
+        estados = content.split(';')   
+    
+    if estado not in estados:
+        mb.showerror("Erro", "Estado inválido! O estado deve estar contido no arquivo config.txt")
+        return
 
-    cursor.execute("INSERT INTO Tabela1 VALUES (?, ?, ?, ?)", (nome, cpf, estado, tipo))
+    cursor.execute("INSERT INTO Tabela1 VALUES (?, ?, ?)", (nome, cpf, estado))
     connection.commit()
     mb.showinfo("Sucesso", f"Dados de '{nome}' inseridos com sucesso!")
 
@@ -56,14 +64,7 @@ def Main():
     e3 = tkinter.Entry(frame, textvariable=estado_var)
     e3.pack(pady=5)
 
-    label_tipo = tkinter.Label(frame, text="Tipo:", bg='lightgray')
-    label_tipo.pack(pady=5)
-    tipo_var = tkinter.StringVar()
-    combobox_tipo = ttk.Combobox(frame, textvariable=tipo_var)
-    combobox_tipo['values'] = ('clt', 'mei', 'socio')
-    combobox_tipo.pack(pady=5)
-
-    salvar_button = tkinter.Button(frame, text="Salvar", command=lambda: inserevalores(nome_var.get(), cpf_var.get(), estado_var.get(), tipo_var.get()))
+    salvar_button = tkinter.Button(frame, text="Salvar", command=lambda: inserevalores(nome_var.get(), cpf_var.get(), estado_var.get()))
     salvar_button.pack(pady=10)
 
     root.mainloop()
