@@ -48,8 +48,8 @@ def Main():
     e3 = tkinter.Entry(frame, textvariable=estado_var)
     e3.pack(pady=5)
 
-    salvar_button = tkinter.Button(frame, text="Salvar", command=lambda: inserevalores(nome_var.get(), cpf_var.get(), estado_var.get()))
-    salvar_button.pack(pady=10)
+    salvar_button = tkinter.Button(root, text="Salvar", command=lambda: inserevalores(nome_var.get(), cpf_var.get(), estado_var.get()))
+    salvar_button.pack()
 
     root.mainloop()
 
