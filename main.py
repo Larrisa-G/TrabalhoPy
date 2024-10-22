@@ -4,13 +4,21 @@ from PIL import Image, ImageTk
 from tkinter import ttk  # Importar ttk para usar Combobox
 import sqlite3
 
-# Conexão com o banco de dados SQLite
 connection = sqlite3.connect('example.db')
 cursor = connection.cursor()
 cursor.execute("CREATE TABLE IF NOT EXISTS Tabela1 (nome TEXT, cpf TEXT, estado TEXT, tipo TEXT)")
 
+def validar_cpf(cpf):
+    cpf = [int(d) for d in cpf if d.isdigit()]
+    if len(cpf) != 11 or len(set(cpf)) == 1:
+        return False
+    return True
+
 
 def inserevalores(nome, cpf, estado, tipo):
+    if not validar_cpf(cpf):
+        mb.showerror("Erro", "CPF inválido!")
+        return
     
     with open("config.txt", "r") as file:
         content = file.read()
@@ -29,11 +37,9 @@ def Main():
     root.title("Trabalho RAD")
     root.resizable(False, False)
 
-    # Carregue a imagem usando Pillow
     image = Image.open(r"C:\Users\Laris\OneDrive\Área de Trabalho\TrabalhoPy\biru.png")
     bg_image = ImageTk.PhotoImage(image)
 
-    # Usar Canvas para colocar a imagem de fundo
     canvas = tkinter.Canvas(root, width=image.width, height=image.height)
     canvas.pack(fill="both", expand=True)
     canvas.create_image(0, 0, image=bg_image, anchor="nw")
@@ -59,7 +65,6 @@ def Main():
     e3 = tkinter.Entry(frame, textvariable=estado_var)
     e3.pack(pady=5)
 
-    # Adicionando o Combobox para selecionar o tipo
     label_tipo = tkinter.Label(frame, text="Tipo:", bg='lightgray')
     label_tipo.pack(pady=5)
     tipo_var = tkinter.StringVar()
